@@ -18,6 +18,7 @@
 
 
 import pandas as pd
+import numpy as np
 from pandas import Series, DataFrame
 
 
@@ -37,7 +38,7 @@ class Houses:
 
 # 2. Emergence - Match renters and houses based on a set of features
 
-def match(time,match_score,demand,supply):
+def match(time,match_score,demand,supply,bid_times):
     r = Renters(cohort,match_score,demand)
     h = Houses(cohort,match_score,supply)
     renter = r.features
@@ -62,6 +63,9 @@ def match(time,match_score,demand,supply):
         print 'House match:', '\n', 'house |', 'matches', '\n', match_h, '\n', (Series(match_h)).value_counts(ascending=True)
         print 'No renter match:', '\n', 'renter |', 'no matches', '\n', no_match_r, '\n', (Series(no_match_r)).value_counts(ascending=True)
         print 'No house match:', '\n', 'house |', 'no matches', '\n', no_match_h, '\n', (Series(no_match_h)).value_counts(ascending=True)
+    match_n = DataFrame((Series(match_r)).value_counts(ascending=True))
+    rented_out = list(match_n[match_n >= bid_times].dropna().index)
+    print 'Rented out:', rented_out
         # Add new renters and houses for each cycle
 #         renters.append(range(11,20))
 #         houses.append(range(11,20))
@@ -73,5 +77,6 @@ cohort = 'A'
 match_score = 10
 demand = 11
 supply = 11
+bid_times = 3
 # Run
-match(time,match_score,demand,supply)
+match(time,match_score,demand,supply,bid_times)
